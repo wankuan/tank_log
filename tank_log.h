@@ -1,10 +1,7 @@
-#ifndef __MY_LOG_H__
-#define __MY_LOG_H__
+#ifndef __TANK_LOG_H__
+#define __TANK_LOG_H__
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#include "tank_pub_type.h"
 
 #define LOG_FILE_NAME_MAX_SIZE 256
 #define LOG_FILE_PATH_MAX_SIZE 256
@@ -43,8 +40,6 @@
 
 #define LOG_INFO_MASK (uint32_t)(0x0000003F)
 
-#define LOG_MAX_LEVEL_SIZE (sizeof(g_tank_log_level_str)/sizeof(g_tank_log_level_str[0]))
-
 typedef enum _log_status_t{
     LOG_SUCCESS = 0,
     LOG_FAIL = 1,
@@ -61,53 +56,54 @@ typedef enum _log_level_t{
     LEVEL_EMERGENCY = 7
 }log_level_t;
 
-uint8_t* g_tank_log_level_str[] = {
-        "LEVEL_DEBUG",
-        "LEVEL_INFO",
-        "LEVEL_NOTIFICATION",
-        "LEVEL_WARNING",
-        "LEVEL_ERROR",
-        "LEVEL_CRITICAL",
-        "LEVEL_ALERT",
-        "LEVEL_EMERGENCY"
-};
+// const char* g_tank_log_level_str[] = {
+//         "LEVEL_DEBUG",
+//         "LEVEL_INFO",
+//         "LEVEL_NOTIFICATION",
+//         "LEVEL_WARNING",
+//         "LEVEL_ERROR",
+//         "LEVEL_CRITICAL",
+//         "LEVEL_ALERT",
+//         "LEVEL_EMERGENCY"
+// };
 
+// #define LOG_MAX_LEVEL_SIZE (sizeof(g_tank_log_level_str)/sizeof(g_tank_log_level_str[0]))
 
-#define LOG_INFO_TIME    (uint32_t)0x01<<0,
-#define LOG_INFO_OUTAPP  (uint32_t)0X01<<1,
-#define LOG_INFO_FUNC    (uint32_t)0X01<<2,
-#define LOG_INFO_FILE    (uint32_t)0X01<<3,
-#define LOG_INFO_LINE    (uint32_t)0X01<<4,
-#define LOG_INFO_LEVEL   (uint32_t)0X01<<5
+typedef uint32_t log_info_type;
 
-typedef struct _log_info_t{
-    
-    log_file_t file_handler;
-}log_info_t;
+#define LOG_INFO_TIME    (log_info_type)0x01<<0
+#define LOG_INFO_OUTAPP  (log_info_type)0X01<<1
+#define LOG_INFO_FUNC    (log_info_type)0X01<<2
+#define LOG_INFO_FILE    (log_info_type)0X01<<3
+#define LOG_INFO_LINE    (log_info_type)0X01<<4
+#define LOG_INFO_LEVEL   (log_info_type)0X01<<5
+
 
 typedef struct _log_file_t{
-    FILE* FILE_handler;
-    uint8_t name[LOG_FILE_NAME_MAX_SIZE];
-    uint8_t path[LOG_FILE_PATH_MAX_SIZE];
+    FILE* FILE_IO;
+    char name[LOG_FILE_NAME_MAX_SIZE];
     uint32_t size;
 }log_file_t;
 
+typedef struct _log_info_t{
+    log_info_type type;
+}log_info_t;
 
 typedef struct _tank_log_t{
     log_file_t file_handler;
+    log_info_t info_handler;
 }tank_log_t, *tank_log_handler;
 
 
-
-
-log_status_t tank_log_constructor(tank_log_t *tank_log_handler, uint8_t *file_name, uint32_t file_size);
-log_status_t tank_log_destructor(tank_log_t* log_file_handler);
+log_status_t tank_log_constructor(tank_log_t *log_handler);
+log_status_t tank_log_destructor(tank_log_t* log_handler);
+log_status_t tank_log_write(tank_log_t *log_handler, char *filename, char *fun, char *line, log_level_t level, char *content);
 log_status_t tank_log_output(tank_log_t* log_file_handler,uint32_t info,uint32_t app, uint32_t level, char* fmt, ...);
 
 static log_status_t get_current_time_str(uint8_t *p_timer);
 static log_status_t get_log_level_str(uint32_t level, uint8_t *p_level);
 
-
+static log_status_t write_file(FILE *fp, char *buffer);
 // void write_buffer(const char *fmt, ...);
 // char *make_message(const char *fmt, ...);
 // #define LOG_S(fmt, ...) write_buffer(fmt,__VA_ARGS__)
