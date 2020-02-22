@@ -81,11 +81,11 @@ log_status_t tank_log_write(tank_log_t *log_handler, char *app, char *filename, 
         write_len = strlen(log_buffer);
     }
     if(log_info&LOG_INFO_FILE){
-        snprintf(&log_buffer[write_len], LOG_INFO_APP_WIDTH, "[%s]",filename);
+        snprintf(&log_buffer[write_len], LOG_INFO_FILE_WIDTH, "[%s]",filename);
         write_len = strlen(log_buffer);
     }
     if(log_info&LOG_INFO_FUNC){
-        snprintf(&log_buffer[write_len], LOG_INFO_TIME_WIDTH, "[%s]",fun);
+        snprintf(&log_buffer[write_len], LOG_INFO_FUN_WIDTH, "[%s]",fun);
         write_len = strlen(log_buffer);
     }
     if(log_info&LOG_INFO_LEVEL){
