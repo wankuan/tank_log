@@ -17,6 +17,7 @@
 #define LOG_INFO_FILE_WIDTH 100
 #define LOG_INFO_LINE_WIDTH 100
 #define LOG_INFO_LEVEL_WIDTH 30
+
 // #define LOG_RECORD(logLev, fmt, ...)
 //     printf(fmt, __VA_ARGS__)
 
@@ -56,25 +57,20 @@ typedef enum _log_level_t{
     LEVEL_EMERGENCY = 7
 }log_level_t;
 
-// const char* g_tank_log_level_str[] = {
-//         "LEVEL_DEBUG",
-//         "LEVEL_INFO",
-//         "LEVEL_NOTIFICATION",
-//         "LEVEL_WARNING",
-//         "LEVEL_ERROR",
-//         "LEVEL_CRITICAL",
-//         "LEVEL_ALERT",
-//         "LEVEL_EMERGENCY"
-// };
-
 // #define LOG_MAX_LEVEL_SIZE (sizeof(g_tank_log_level_str)/sizeof(g_tank_log_level_str[0]))
 
 typedef uint32_t log_info_type;
+typedef uint32_t log_out_port;
+
+#define PORT_SHELL    (log_out_port)0x01<<0
+#define PORT_FILE     (log_out_port)0X01<<1
+#define PORT_UART     (log_out_port)0X01<<2
+
 
 #define LOG_INFO_TIME    (log_info_type)0x01<<0
 #define LOG_INFO_OUTAPP  (log_info_type)0X01<<1
-#define LOG_INFO_FUNC    (log_info_type)0X01<<2
-#define LOG_INFO_FILE    (log_info_type)0X01<<3
+#define LOG_INFO_FILE    (log_info_type)0X01<<2
+#define LOG_INFO_FUNC    (log_info_type)0X01<<3
 #define LOG_INFO_LINE    (log_info_type)0X01<<4
 #define LOG_INFO_LEVEL   (log_info_type)0X01<<5
 
@@ -87,6 +83,7 @@ typedef struct _log_file_t{
 
 typedef struct _log_info_t{
     log_info_type type;
+    log_out_port  port;
 }log_info_t;
 
 typedef struct _tank_log_t{
@@ -97,28 +94,8 @@ typedef struct _tank_log_t{
 
 log_status_t tank_log_constructor(tank_log_t *log_handler);
 log_status_t tank_log_destructor(tank_log_t* log_handler);
-log_status_t tank_log_write(tank_log_t *log_handler, char *filename, char *fun, char *line, log_level_t level, char *content);
-log_status_t tank_log_output(tank_log_t* log_file_handler,uint32_t info,uint32_t app, uint32_t level, char* fmt, ...);
+log_status_t tank_log_write(tank_log_t *log_handler, char *app, char *filename, char *fun, log_level_t level, char *fmt, ...);
 
-static log_status_t get_current_time_str(uint8_t *p_timer);
-static log_status_t get_log_level_str(uint32_t level, uint8_t *p_level);
-
-static log_status_t write_file(FILE *fp, char *buffer);
-// void write_buffer(const char *fmt, ...);
-// char *make_message(const char *fmt, ...);
-// #define LOG_S(fmt, ...) write_buffer(fmt,__VA_ARGS__)
-
-
-// char* my_printf(char *fmt,...);
-
-// #define LOG_S(fmt, ...)\
-//     do{\
-//         char fmt_str[1024];\
-//         char time_buf[30];\
-//         get_current_time(time_buf);\
-//         snprintf(fmt_str,1024,"%s %s",time_buf,fmt,__VA_ARGS__);\
-//         printf("%s\n",fmt_str);\
-//     }while(0)
 
 
 

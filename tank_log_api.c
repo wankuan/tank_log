@@ -1,11 +1,12 @@
 #include "tank_log_api.h"
 
 
-tank_status_t tank_log_init(tank_log_t *log_handler, char *filename, uint32_t size, log_info_type info_type)
+tank_status_t tank_log_init(tank_log_t *log_handler, char *filename, uint32_t size, log_info_type info_type, log_out_port port)
 {
     log_status_t status;
     log_handler->file_handler.size = size;
     log_handler->info_handler.type = info_type;
+    log_handler->info_handler.port = port;
     strncpy(log_handler->file_handler.name, filename, LOG_FILE_NAME_MAX_SIZE);
     status = tank_log_constructor(log_handler);
     if (status != LOG_SUCCESS){
