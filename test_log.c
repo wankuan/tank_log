@@ -11,7 +11,7 @@ tank_log_t mylog;
 
 int main(int argv, char*args[])
 {
-    tank_log_init(&mylog, "logfile.log",2048,
+    tank_log_init(&mylog, "logfile.log",2048,LEVEL_DEBUG,
                 LOG_INFO_TIME|LOG_INFO_OUTAPP|LOG_INFO_FUNC|LOG_INFO_FILE|LOG_INFO_LEVEL,
                 PORT_SHELL|PORT_FILE
                 );
